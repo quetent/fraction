@@ -1,9 +1,15 @@
-﻿namespace FractionProject
+﻿using System.Threading.Tasks.Sources;
+
+namespace FractionProject
 {
     public class Fraction
     {
-        public readonly int _numerator;
-        public readonly int _denominator;
+        private readonly int _numerator;
+        public int Numerator { get { return _numerator; } }
+
+        private readonly int _denominator;
+        public int Denominator { get { return _denominator; } } 
+
         private readonly int signCoeff;
 
         private const double epsilon = 10e-12;
@@ -25,30 +31,17 @@
             _denominator = newDenominator;
         }
 
-        public override string ToString()
+        public static Fraction Abs(Fraction fraction)
         {
-            var sign = signCoeff == 1 ? string.Empty : "- ";
-            (var absNumerator, var absDenominator) = Abs(_numerator, _denominator);
+            (var absNumerator, var absDenominator) = Abs(fraction._numerator,
+                                                         fraction._denominator);
 
-            return $"{sign}{absNumerator} / {absDenominator}";
+            return new Fraction(absNumerator, absDenominator);
         }
 
-        public string Visualize()
+        public static int GetWholePart(int number1, int number2)
         {
-            return GetView();
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Fraction fraction)
-                return this == fraction;
-
-            return ReferenceEquals(this, obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Abs(_numerator, _denominator), signCoeff);
+            return number1 / number2;
         }
 
         public static Fraction operator +(Fraction fraction1, Fraction fraction2)
@@ -113,14 +106,145 @@
                 && IsSignCoeffsEqual(fraction1, fraction2);
         }
 
-        private static bool IsSignCoeffsEqual(Fraction fraction1, Fraction fraction2)
-        {
-            return fraction1.signCoeff == fraction2.signCoeff;
-        }
-
         public static bool operator !=(Fraction fraction1, Fraction fraction2)
         {
             return !(fraction1 == fraction2);
+        }
+
+        public override string ToString()
+        {
+            var sign = signCoeff == 1 ? string.Empty : "- ";
+            (var absNumerator, var absDenominator) = Abs(_numerator, _denominator);
+
+            return $"{sign}{absNumerator} / {absDenominator}";
+        }
+
+        public string Visualize()
+        {
+            return GetView();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is Fraction fraction)
+                return this == fraction;
+
+            return ReferenceEquals(this, obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Abs(_numerator, _denominator), signCoeff);
+        }
+
+        public Fraction WithNumerator(int numerator)
+        {
+            if (signCoeff == -1 && numerator < 0)
+                numerator = Math.Abs(numerator);
+
+            return new Fraction(numerator, _denominator);
+        }
+
+        public Fraction WithDenominator(int denominator)
+        {
+            return new Fraction(_numerator, denominator);
+        }
+
+        public int GetWholePart()
+        {
+            return _numerator / _denominator;
+        }
+
+        public float AsFloat()
+        {
+            return (float)_numerator / _denominator;
+        }
+
+        public double AsDouble()
+        {
+            return (double)_numerator / _denominator;
+        }
+
+        public decimal AsDecimal()
+        {
+            return (decimal)_numerator / _denominator;
+        }
+
+        public Fraction Reverse()
+        {
+            return new Fraction(_denominator, _numerator);
+        }
+
+        private static string GetSpaceLine(int numeratorLength, int denominatorLength, int maxLength)
+        {
+            string spaces;
+            if (numeratorLength == denominatorLength)
+                spaces = string.Empty;
+            else
+                spaces = new string(' ', maxLength / 2);
+
+            return spaces;
+        }
+
+        private static void AddSpaces(int numeratorLength, int denominatorLength,
+                                      ref string numeratorAsString, ref string denominatorAsString,
+                                      string spaces)
+        {
+            if (numeratorLength < denominatorLength)
+                numeratorAsString = spaces + numeratorAsString;
+            else
+                denominatorAsString = spaces + denominatorAsString;
+        }
+
+        private static int CrossMultiplication(Fraction fraction1, Fraction fraction2)
+        {
+            return fraction1._numerator * fraction2._denominator;
+        }
+
+        private static (int, int) Simplify(int numerator, int denominator)
+        {
+            if (numerator == denominator)
+                return (1, 1);
+
+            var wholePart = GetWholePart(numerator, denominator);
+            if (IsDividedWithoutRemainder(numerator, denominator))
+                return (wholePart, 1);
+
+            wholePart = GetWholePart(denominator, numerator);
+            if (IsDividedWithoutRemainder(denominator, numerator))
+                return (1, wholePart);
+
+            return BruteForceDividers(numerator, denominator);
+        }
+
+        private static (int, int) BruteForceDividers(int numerator, int denominator)
+        {
+            foreach (var divider in dividers)
+            {
+                while ((IsDividedWithoutRemainder(numerator, divider)
+                     && IsDividedWithoutRemainder(denominator, divider)))
+                {
+                    numerator /= divider;
+                    denominator /= divider;
+                }
+            }
+
+            return (numerator, denominator);
+        }
+
+        private static bool IsDividedWithoutRemainder(int number, int divider)
+        {
+            return ((double)number / divider).IsEqual(GetWholePart(number, divider), epsilon);
+        }
+
+        private static (int, int) Abs(int number1, int number2)
+        {
+            return (Math.Abs(number1), Math.Abs(number2));
+        }
+
+        private static bool IsSignCoeffsEqual(Fraction fraction1, Fraction fraction2)
+        {
+            return fraction1.signCoeff == fraction2.signCoeff;
         }
 
         private static bool IsNumeratorsEqual(Fraction fraction1, Fraction fraction2)
@@ -194,124 +318,6 @@
                 numeratorAsString = "  " + numeratorAsString;
                 denominatorAsString = "  " + denominatorAsString;
             }
-        }
-
-        private static string GetSpaceLine(int numeratorLength, int denominatorLength, int maxLength)
-        {
-            string spaces;
-            if (numeratorLength == denominatorLength)
-                spaces = string.Empty;
-            else
-                spaces = new string(' ', maxLength / 2);
-
-            return spaces;
-        }
-
-        private static void AddSpaces(int numeratorLength, int denominatorLength,
-                                      ref string numeratorAsString, ref string denominatorAsString,
-                                      string spaces)
-        {
-            if (numeratorLength < denominatorLength)
-                numeratorAsString = spaces + numeratorAsString;
-            else
-                denominatorAsString = spaces + denominatorAsString;
-        }
-
-        public Fraction WithNumerator(int numerator)
-        {
-            if (signCoeff == -1 && numerator < 0)
-                numerator = Math.Abs(numerator);
-
-            return new Fraction(numerator, _denominator);
-        }
-
-        public Fraction WithDenominator(int denominator)
-        {
-            return new Fraction(_numerator, denominator);
-        }
-
-        public int GetWholePart()
-        {
-            return _numerator / _denominator;
-        }
-
-        public static int GetWholePart(int number1, int number2)
-        {
-            return number1 / number2;
-        }
-
-        public float AsFloat()
-        {
-            return (float)_numerator / _denominator;
-        }
-
-        public double AsDouble()
-        {
-            return (double)_numerator / _denominator;
-        }
-
-        public decimal AsDecimal()
-        {
-            return (decimal)_numerator / _denominator;
-        }
-
-        public Fraction Reverse()
-        {
-            return new Fraction(_denominator, _numerator);
-        }
-
-        private static int CrossMultiplication(Fraction fraction1, Fraction fraction2)
-        {
-            return fraction1._numerator * fraction2._denominator;
-        }
-
-        private static (int, int) Simplify(int numerator, int denominator)
-        {
-            if (numerator == denominator)
-                return (1, 1);
-
-            var wholePart = GetWholePart(numerator, denominator);
-            if (IsDividedWithoutRemainder(numerator, denominator))
-                return (wholePart, 1);
-
-            wholePart = GetWholePart(denominator, numerator);
-            if (IsDividedWithoutRemainder(denominator, numerator))
-                return (1, wholePart);
-
-            return BruteForceDividers(numerator, denominator);
-        }
-
-        private static (int, int) BruteForceDividers(int numerator, int denominator)
-        {
-            foreach (var divider in dividers)
-            {
-                while ((IsDividedWithoutRemainder(numerator, divider)
-                     && IsDividedWithoutRemainder(denominator, divider)))
-                {
-                    numerator /= divider;
-                    denominator /= divider;
-                }
-            }
-
-            return (numerator, denominator);
-        }
-
-        private static bool IsDividedWithoutRemainder(int number, int divider)
-        {
-            return ((double)number / divider).IsEqual(GetWholePart(number, divider), epsilon);
-        }
-
-        private static (int, int) Abs(int number1, int number2)
-        {
-            return (Math.Abs(number1), Math.Abs(number2));
-        }
-
-        public static Fraction Abs(Fraction fraction)
-        {
-            (var absNumerator, var absDenominator) = Abs(fraction._numerator,
-                                                         fraction._denominator);
-
-            return new Fraction(absNumerator, absDenominator);
         }
     }
 }

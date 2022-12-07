@@ -6,7 +6,7 @@
         {
             // < --- Check tests --- >
 
-            var fraction = new Fraction(-123, 2);
+            var fraction = new Fraction(2, -4);
             WriteLine(fraction.Visualize());
         }
     }

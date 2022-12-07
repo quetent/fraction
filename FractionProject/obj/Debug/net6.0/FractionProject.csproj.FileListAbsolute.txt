@@ -1,0 +1,15 @@
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\FractionProject.csproj.AssemblyReference.cache
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\FractionProject.GeneratedMSBuildEditorConfig.editorconfig
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\FractionProject.AssemblyInfoInputs.cache
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\FractionProject.AssemblyInfo.cs
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\FractionProject.csproj.CoreCompileInputs.cache
+D:\projects\cs projects\FractionProject\FractionProject\bin\Debug\net6.0\FractionProject.exe
+D:\projects\cs projects\FractionProject\FractionProject\bin\Debug\net6.0\FractionProject.deps.json
+D:\projects\cs projects\FractionProject\FractionProject\bin\Debug\net6.0\FractionProject.runtimeconfig.json
+D:\projects\cs projects\FractionProject\FractionProject\bin\Debug\net6.0\FractionProject.dll
+D:\projects\cs projects\FractionProject\FractionProject\bin\Debug\net6.0\FractionProject.pdb
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\FractionProject.dll
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\refint\FractionProject.dll
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\FractionProject.pdb
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\FractionProject.genruntimeconfig.cache
+D:\projects\cs projects\FractionProject\FractionProject\obj\Debug\net6.0\ref\FractionProject.dll
