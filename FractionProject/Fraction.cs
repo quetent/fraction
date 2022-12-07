@@ -206,13 +206,11 @@ namespace FractionProject
             if (numerator == denominator)
                 return (1, 1);
 
-            var wholePart = GetWholePart(numerator, denominator);
             if (IsDividedWithoutRemainder(numerator, denominator))
-                return (wholePart, 1);
+                return (GetWholePart(numerator, denominator), 1);
 
-            wholePart = GetWholePart(denominator, numerator);
             if (IsDividedWithoutRemainder(denominator, numerator))
-                return (1, wholePart);
+                return (1, GetWholePart(denominator, numerator));
 
             return BruteForceDividers(numerator, denominator);
         }
